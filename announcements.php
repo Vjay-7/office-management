@@ -30,6 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     
                     $message = "Announcement created successfully!";
+                    // After successfully creating an announcement
+                    $stmt = $pdo->query("SELECT id FROM users WHERE role = 'employee'");
+                    $employees = $stmt->fetchAll();
+
+                    foreach ($employees as $employee) {
+                        createNotification($employee['id'], 'announcement', 'New Announcement', 'A new announcement has been posted: ' . $title);
+                    }
                 } catch (PDOException $e) {
                     $error = "Error creating announcement: " . $e->getMessage();
                 }
